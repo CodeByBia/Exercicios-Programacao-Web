@@ -12,9 +12,9 @@ function adicionarNaLista (){
         return;
     }
 
-    const idadeNum = parseInt(idade);
+    const idadeNum = Number(idade);
 
-    if (!Number.isInteger(idadeNum) || isNaN(idadeNum) || idadeNum <= 0){
+    if (isNaN(idadeNum) || !Number.isInteger(idadeNum)){
         alert("Por favor, coloque uma idade válida.");
         return;
     }
