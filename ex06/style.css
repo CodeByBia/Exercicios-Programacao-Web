@@ -1,0 +1,28 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+
+}
+
+.btns{
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+button{
+    height: 30px;
+    width: 30px;
+    font-size: 20px;
+    cursor: pointer;
+    color: white;
+    background-color: rgb(67, 118, 228);;
+    border: none;
+    border-radius: 3px;
+}
+
+
+
+
