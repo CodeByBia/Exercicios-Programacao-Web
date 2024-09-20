@@ -6,6 +6,12 @@ body {
 
 }
 
+.img{
+    height: 500px;
+    width: 500px;
+    padding: 50px;
+}
+
 .btns{
     display: flex;
     gap: 5px;
@@ -23,6 +29,18 @@ button{
     border-radius: 3px;
 }
 
+.guess{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 50px;
+    padding-bottom: 50px;
+}
 
+.letra{
+    text-decoration: underline;
+}
+  
+    /* underline; adicionado o sublinhado em cada class letra, que foi criado diretamente no juavascript
 
 
