@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tela 1</title>
+       <script>
+ 
+    const apiUrl = 'https://jsonplaceholder.typicode.com/posts'; // Define a URL da API 
+    fetch(apiUrl) // Faz uma requisição HTTP GET para a API
+    .then (response => { // Quando a resposta é recebida, entra no primeiro 'then'
+        return response.json(); // Converte a resposta para JSON
+    })
+    .then (data => { // Recebe os dados convertidos
+        const frame = document.getElementById('frame'); // Seleciona o elemento com id 'frame'
+        data.forEach(post => { // Itera sobre cada 'post' nos dados (no caso deveria ser uma lista)
+            const list = document.createElement('li'); // Cria um novo item de lista (li)
+            list.textContent = `${post.title}`; // Define o texto do item da lista como o título do 'post'
+            frame.appendChild(list); // Adiciona o item da lista ao 'frame'
+        });
+    })
+    .catch(error => { // Captura qualquer erro que ocorrer
+        alert('Erro', error); // Exibe um alerta com a mensagem de erro
+    });
+
+    </script>
+</head>
+<body>
+
+    <h1>API 1</h1>
+    <ul id="frame"></ul>
+
+ 
+</body>
+</html>
