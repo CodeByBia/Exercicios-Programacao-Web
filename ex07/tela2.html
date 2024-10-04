@@ -7,8 +7,23 @@
     <title>Tela 2</title>
 </head>
 <body>
+
+    <button class="chamarApi">Fazer requisição</button>
+
     <script>
-        
+        const chamarApi = document.querySelector(".chamarApi");
+        const api = await fetch('https://jsonplaceholder.typicode.com/posts');
+        const posts = api.json();
+
+        chamarApi.onclick = function(){
+            try{
+                posts.forEach((post) =>{
+                    
+                }
+
+                )
+            }
+        }
     </script>
 </body>
 </html>
