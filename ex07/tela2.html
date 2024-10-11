@@ -3,27 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js"></script>
-    <title>Tela 2</title>
+    <script src="script2.js"></script>
+    <title>Tela 2 - Random User</title>
 </head>
 <body>
 
-    <button class="chamarApi">Fazer requisição</button>
+    <h1>Api Random User</h1>
+    <h3>Recarregue a página!</h3>
+    <p id="users"></p>
 
-    <script>
-        const chamarApi = document.querySelector(".chamarApi");
-        const api = await fetch('https://jsonplaceholder.typicode.com/posts');
-        const posts = api.json();
-
-        chamarApi.onclick = function(){
-            try{
-                posts.forEach((post) =>{
-                    
-                }
-
-                )
-            }
-        }
-    </script>
 </body>
 </html>
