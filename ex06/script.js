@@ -1,4 +1,4 @@
-const palavras = [
+const words = [
     "abacate", "anel", "amigo", "ave", "abacaxi",
     "bola", "bala", "banho", "banco", "baú",
     "casa", "cachorro", "carro", "café", "cama",
@@ -29,47 +29,87 @@ const palavras = [
 
 
 const contentBtns = document.querySelector(".btns");
-const img = document.querySelector(".img");
-let index = [Math.floor(Math.random() * palavras.length)];
-let palavraEscolhida = palavras[index];
-let upperCasepalavra = palavraEscolhida.toUpperCase();
-console.log(upperCasepalavra);
+const contentGuessWord = document.querySelector(".guess-word");
+const img = document.querySelector("img");
+const btnNew = document.querySelector(".new");
+btnNew.onclick = () => init();
+let indexImg;
 
-init();
+function init() {
+  indexImg = 0;
+  img.src = `./img/forca0.png`;
 
-function init(){
-    generateButtons();
+  generateGuessSection();
+  generateButtons();
+}
+
+function getWord() {
+    const index = Math.floor(Math.random() * words.length);
+    return words[index];
+  }
+
+function generateGuessSection() {
+  contentGuessWord.textContent = "";
+
+  const word = getWord();
+
+  Array.from(word).forEach((letter) => {
+    const span = document.createElement("span");
+
+    span.textContent = "_";
+    span.setAttribute("word", letter.toUpperCase());
+    contentGuessWord.appendChild(span);
+    console.log(word);
+  });
 
 }
 
-function generateButtons (){
-    // content.textContent = "";
+function wrongAnswer() {
+  indexImg++;
+  img.src = `./img/forca${indexImg}.png`;
 
-    for (let i= 97; i < 123; i++){
-        const letter = String.fromCharCode(i).toUpperCase();
-        const btn = document.createElement("button");
-        btn.textContent = letter;
-        
-        btn.onclick = () => {
-            btn.style.backgroundColor = "gray";
-        };
-
-        contentBtns.appendChild(btn); //o botão btn, que foi criado no loop, será adicionado como um filho do elemento contentBtns
- 
-    }
-}
-// criado função no botão Iniciar, loop para percorrer a lista de letras da palavraEscolhida, armazenando a cada iteração cada letra em upperCase
-btnIniciar.onclick = function () {
-    for (let i = 0; i < upperCasepalavra.length; i++){
-        const letra = upperCasepalavra[i];
-
-        let letraDiv = document.createElement("div");
-        letraDiv.className = 'letra';
-        letraDiv.textContent = letra;
-        containerDiv.appendChild(letraDiv);
-
-    }
+  if (indexImg === 7) {
+    setTimeout(() => {
+      alert("Perdeu!");
+      init();
+    }, 100);
+  }
 }
 
+function verifyLetter(letter) {
+  const arr = document.querySelectorAll(`[word="${letter}"]`);
 
+  if (!arr.length) wrongAnswer();
 
+  arr.forEach((e) => {
+    e.textContent = letter;
+  });
+
+  const spans = document.querySelectorAll(`.guess-word span`);
+  const won = !Array.from(spans).find((span) => span.textContent === "_");
+
+  if (won) {
+    setTimeout(() => {
+      alert("Ganhou!!!");
+      init();
+    }, 100);
+  }
+}
+
+function generateButtons() {
+  contentBtns.textContent = "";
+
+  for (let i = 97; i < 123; i++) {
+    const btn = document.createElement("button");
+    const letter = String.fromCharCode(i).toUpperCase();
+    btn.textContent = letter;
+
+    btn.onclick = () => {
+      btn.disabled = true;
+      btn.style.backgroundColor = "gray";
+      verifyLetter(letter);
+    };
+
+    contentBtns.appendChild(btn);
+  }
+}

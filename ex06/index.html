@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="script.js" type="module" defer></script>
+    <script src="script.js" defer></script>
     <link rel="stylesheet" href="style.css">
     <title>Jogo da Forca</title>
 </head>
@@ -11,13 +11,16 @@
     <header>
         <h1>Jogo da Forca</h1>
     </header>
+    <button class="new">Novo Jogo</button>
     <main>
-            <button id="btnIniciar">Iniciar Jogo</button>
-            <img class="img" src="./img/img1.png" alt="">
-            <div id="containerDiv"></div>
+        <article class="content-img">
+            <img src="img/forca0.png" width="250px" alt="Jogo da forca">
+        </article>
+        <article class="content">
+            <div class="guess-word"></div>
+            <div class="clue"></div>
             <div class="btns"></div>
-
-
-    </main>   
+        </article>
+    </main>
 </body>
 </html>
