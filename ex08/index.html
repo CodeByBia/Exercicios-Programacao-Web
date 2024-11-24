@@ -1,17 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Lista de Tarefas (back4app)</title>
-    <script src="./script.js" defer></script>
-  </head>
-  <body>
-    <h1>Lista de Tarefas (back4app)</h1>
-    <hr />
-    <p>
-      <input id="inputDescricao" /><button id="btAdicionar">Adicionar</button>
-    </p>
-    <hr />
-    <ol id="olTarefas"></ol>
-  </body>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD de Despesas</title>
+</head>
+<body>
+  <h1>Controle de Despesas</h1>
+  
+ 
+  <label for="inputDescricao">Descrição:</label>
+  <input type="text" id="inputDescricao" placeholder="Descrição da despesa">
+  <label for="inputValor">Valor:</label>
+  <input type="number" id="inputValor" placeholder="Valor da despesa" step="0.01">
+  <button id="btAdicionar">Adicionar</button>
+  
+  <hr>
+  
+  
+  <h2>Despesas</h2>
+  <ul id="ulDespesas"></ul>
+  
+ 
+  <div>
+    Total de despesas: <span id="valorTotal">R$ 0,00</span>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
 </html>
