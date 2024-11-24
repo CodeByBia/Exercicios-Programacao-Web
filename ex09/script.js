@@ -1,145 +1,131 @@
-const inputUsername = document.getElementById("inputUsername");
-const inputPassword = document.getElementById("inputPassword");
-const inputEmail = document.getElementById("inputEmail");
-const btSignUp = document.getElementById("btSignUp");
-const btLogin = document.getElementById("btLogin");
-const btLogout = document.getElementById("btLogout");
-const h1IndexTitle = document.getElementById("h1IndexTitle");
 
-const baseURL = "https://parseapi.back4app.com";
-const usersURL = `${baseURL}/users`;
-const loginURL = `${baseURL}/login`;
-const logoutURL = `${baseURL}/logout`;
+const ulDespesas = document.getElementById("ulDespesas");
+const inputDescricao = document.getElementById("inputDescricao");
+const inputValor = document.getElementById("inputValor");
+const btAdicionar = document.getElementById("btAdicionar");
+
+// url e headers da api
+const baseURL = "https://parseapi.back4app.com/classes/Tarefa";
 const headers = {
-  "X-Parse-Application-Id": "IjMQNnxBbsuYKEsnvNuQhwiEw9pkLJkwWfhB9aG1",
-  "X-Parse-REST-API-Key": "ip0a7zYuKwJNXicmLC5TkLN6DGWVbLhRtIYDjU6R",
-};
-const headersRevSession = {
-  ...headers,
-  "X-Parse-Revocable-Session": "1",
-};
+  "X-Parse-Application-Id": "egF03IJQe7OgjQ3zqZMD5kQ5a6e3D08c9MZ3iXWK",
+  "X-Parse-REST-API-Key": "4SmJsCUthVYylaCvfXQbOI0enyEU6ujg0vdyfusv",
+  "Content-Type": "application/json",
+
 const headersJson = {
-  ...headersRevSession,
+  ...headers,
   "Content-Type": "application/json",
 };
 
-const handleBtSignUpClick = async () => {
-  const username = inputUsername.value.trim();
-  if (!username) {
-    alert("Preencha o nome do usuário!");
-    inputUsername.focus();
-    return;
-  }
-
-  const password = inputPassword.value.trim();
-  if (!password) {
-    alert("Preencha a senha!");
-    inputPassword.focus();
-    return;
-  }
-
-  const email = inputEmail.value.trim();
-  if (!email) {
-    alert("Preencha o e-mail!");
-    inputEmail.focus();
-    return;
-  }
-
-  const response = await fetch(usersURL, {
-    method: "POST",
-    headers: headersJson,
-    body: JSON.stringify({ username, password, email }),
-  });
-  const data = await response.json();
-  console.log("user:", data);
-};
-
-const handleBtLoginClick = async () => {
-  const username = inputUsername.value.trim();
-  if (!username) {
-    alert("Preencha o nome do usuário!");
-    inputUsername.focus();
-    return;
-  }
-
-  const password = inputPassword.value.trim();
-  if (!password) {
-    alert("Preencha a senha!");
-    inputPassword.focus();
-    return;
-  }
-
-  const response = await fetch(loginURL, {
-    method: "POST",
-    headers: headersRevSession,
-    body: new URLSearchParams({
-      username,
-      password,
-    }),
-  });
-  console.log("response", response);
-  const data = await response.json();
-  if (!response.ok) {
-    alert(`Code: ${data.code} - error: ${data.error}`);
-    return;
-  }
-  console.log("data:", data);
-  localStorage.user = JSON.stringify(data);
-  const searchParams = new URLSearchParams(location.search);
-  if (searchParams.has("url")) {
-    location.replace(searchParams.get("url"));
-  } else {
-    history.back();
-  }
-};
-
-const handleBtLogoutClick = async () => {
-  const userJson = localStorage.user;
-  if (userJson) {
-    const user = JSON.parse(userJson);
-    const response = await fetch(logoutURL, {
-      method: "POST",
-      headers: {
-        ...headers,
-        "X-Parse-Session-Token": user.sessionToken,
-      },
-    });
-    console.log("response", response);
+// Função para listar as despesas e atualizar o somatório
+const listarDespesas = async () => {
+  try {
+    const response = await fetch(baseURL, { method: "GET", headers: headers });
+    if (!response.ok) throw new Error("Erro ao acessar o servidor");
     const data = await response.json();
-    if (!response.ok) {
-      alert(`Code: ${data.code} - error: ${data.error}`);
-      return;
-    }
-    console.log("data:", data);
-    delete localStorage.user;
-    // location.assign("/ex08");
-    history.back();
+    
+    // Atualiza a lista de despesas no HTML
+    ulDespesas.innerHTML = "";
+    let somatorio = 0;
+    data.results.forEach((despesa) => {
+      const li = document.createElement("li");
+      li.textContent = `${despesa.descricao} - R$ ${despesa.valor.toFixed(2)} `;
+
+      // Botão para editar o valor da despesa
+      const btEditar = document.createElement("button");
+      btEditar.textContent = "Editar";
+      btEditar.onclick = () => editarDespesa(despesa);
+      li.appendChild(btEditar);
+
+      // Botão para excluir a despesa
+      const btExcluir = document.createElement("button");
+      btExcluir.textContent = "Excluir";
+      btExcluir.onclick = () => excluirDespesa(despesa.objectId);
+      li.appendChild(btExcluir);
+
+      ulDespesas.appendChild(li);
+
+      // Soma o valor da despesa para o total
+      somatorio += despesa.valor;
+    });
+
+    // Atualiza o somatório no HTML
+    document.getElementById("valorTotal").textContent = `R$ ${somatorio.toFixed(2)}`;
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao carregar as despesas.");
   }
 };
 
-// ================= Events ==========================
+// Função para adicionar uma despesa
+const adicionarDespesa = async () => {
+  const descricao = inputDescricao.value.trim();
+  const valor = parseFloat(inputValor.value.trim());
 
-if (btSignUp) {
-  btSignUp.onclick = handleBtSignUpClick;
-}
+  if (!descricao || isNaN(valor) || valor <= 0) {
+    alert("Por favor, preencha corretamente os campos.");
+    return;
+  }
 
-if (btLogin) {
-  btLogin.onclick = handleBtLoginClick;
-}
+  try {
+    const response = await fetch(baseURL, {
+      method: "POST",
+      headers: headersJson,
+      body: JSON.stringify({ descricao: descricao, valor: valor }),
+    });
 
-if (btLogout) {
-  btLogout.onclick = handleBtLogoutClick;
-}
+    if (!response.ok) throw new Error("Erro ao adicionar a despesa");
 
-if (h1IndexTitle) {
-  window.onload = () => {
-    const userJson = localStorage.user;
-    if (userJson) {
-      const user = JSON.parse(userJson);
-      h1IndexTitle.innerHTML = `Back4App User (${user.username})`;
-      if (btLogout) {
-        btLogout.disabled = false;
-      }
+    inputDescricao.value = "";
+    inputValor.value = "";
+    listarDespesas();
+  } catch (error) {
+    console.error(error);
+    alert("Erro ao adicionar a despesa.");
+  }
+};
+
+// Função para editar uma despesa
+const editarDespesa = async (despesa) => {
+  const novoValor = prompt("Informe o novo valor:", despesa.valor);
+  if (novoValor && !isNaN(novoValor) && parseFloat(novoValor) > 0) {
+    try {
+      const response = await fetch(`${baseURL}/${despesa.objectId}`, {
+        method: "PUT",
+        headers: headersJson,
+        body: JSON.stringify({ valor: parseFloat(novoValor) }),
+      });
+
+      if (!response.ok) throw new Error("Erro ao editar a despesa");
+
+      listarDespesas();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao editar a despesa.");
     }
-  };
-}
+  }
+};
+
+// Função para excluir uma despesa
+const excluirDespesa = async (id) => {
+  if (confirm("Tem certeza que deseja excluir essa despesa?")) {
+    try {
+      const response = await fetch(`${baseURL}/${id}`, {
+        method: "DELETE",
+        headers: headers,
+      });
+
+      if (!response.ok) throw new Error("Erro ao excluir a despesa");
+
+      listarDespesas();
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao excluir a despesa.");
+    }
+  }
+};
+
+// Ao carregar a página, listar as despesas
+window.onload = listarDespesas;
+
+// Ao clicar no botão de adicionar, chama a função para adicionar a despesa
+btAdicionar.onclick = adicionarDespesa;
